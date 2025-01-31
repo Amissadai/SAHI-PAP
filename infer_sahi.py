@@ -163,12 +163,11 @@ def main():
     result_image = draw_detections(
         image.copy(), final_boxes, final_scores, final_classes, model
     )
-    
-    enviar_dado_minio(minio_client, bucket_name, 'dataset_infer/result_infer.png', "dataset_inferido/resultado_final.png")
 
     #cv2.imshow('Resultado Final - YOLOv8', result_image)
     cv2.waitKey(0)
     cv2.imwrite('dataset_infer/result_infer.png', result_image)
+    enviar_dado_minio(minio_client, bucket_name, 'dataset_infer/result_infer.png', "dataset_inferido/resultado_final.png")
     
    
 

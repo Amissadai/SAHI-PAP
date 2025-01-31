@@ -28,16 +28,20 @@ def enviar_dado_minio(minio_client, bucket_name, arquivo_local, arquivo_destino)
     try:
         minio_client.fput_object(bucket_name, arquivo_destino, arquivo_local)
         print(f"Arquivo '{arquivo_local}' enviado como '{arquivo_destino}' com sucesso.")
+
+        # Gerar um link temporário para acessar o arquivo
+        url = minio_client.presigned_get_object(bucket_name, arquivo_destino)
+        print(f"Link para acessar o arquivo: {url}")
     except S3Error as e:
         print(f"Erro ao enviar arquivo: {e}")
 
 
 def download_dado_minio(minio_client, bucket_name, arquivo_remoto, arquivo_local):
     try:
-        url = minio_client.presigned_get_object(bucket_name, arquivo_remoto)
+        #url = minio_client.presigned_get_object(bucket_name, arquivo_remoto)
         minio_client.fget_object(bucket_name, arquivo_remoto, arquivo_local)
         print(f"Arquivo '{arquivo_remoto}' baixado com sucesso para '{arquivo_local}'.")
-        print(f"ID do dado: {url}")
+        #print(f"ID do dado: {url}")
     except S3Error as e:
         print(f"Erro ao baixar arquivo: {e}")
         
