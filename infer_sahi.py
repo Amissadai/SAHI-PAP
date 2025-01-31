@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from ultralytics import YOLO
-from enviar_img_servidor import configuracao_servidor, criar_bucket, download_dado_minio
+from enviar_img_servidor import configuracao_servidor, criar_bucket, enviar_dado_minio, download_dado_minio
 
 def load_model(model_path):
     """Carrega o modelo YOLO a partir do caminho especificado"""
@@ -110,12 +110,12 @@ def main():
     arquivo_remoto = "dataset/04927.bmp"
     minio_client, bucket_name = configuracao_servidor()
     criar_bucket(minio_client, bucket_name)
-    download_dado_minio(minio_client, bucket_name, arquivo_remoto, "dataset_infer/result_infer.png")
+    download_dado_minio(minio_client, bucket_name, arquivo_remoto, "download_image_minio/inferir_imagem.png")
 
     # Configurações
     CONFIG = {
         'model_path': 'best.pt',
-        'image_path': 'dataset_infer/result_infer.png',
+        'image_path': 'download_image_minio/inferir_imagem.png',
         'target_size': (1280, 640),
         'tile_size': (320, 320),
         'step': 10,
@@ -164,10 +164,12 @@ def main():
         image.copy(), final_boxes, final_scores, final_classes, model
     )
     
+    enviar_dado_minio(minio_client, bucket_name, 'dataset_infer/result_infer.png', "dataset_inferido/resultado_final.png")
 
-    cv2.imshow('Resultado Final - YOLOv8', result_image)
+    #cv2.imshow('Resultado Final - YOLOv8', result_image)
     cv2.waitKey(0)
-    cv2.imwrite('resultado_final_nms.jpg', result_image)
+    cv2.imwrite('dataset_infer/result_infer.png', result_image)
+    
    
 
 if __name__ == "__main__":
